@@ -1,10 +1,12 @@
-from sqlmodel import create_engine, Session
-from core.config import settings
+from typing import Annotated
+from fastapi import Depends
+from sqlmodel import Session
+from .engine import engine
 
 
-engine = create_engine(settings.DATABASE_URL, echo=True)  # Add to config.py
-
-
-def get_db():
+def get_session():
     with Session(engine) as session:
         yield session
+
+
+SessionDep = Annotated[Session, Depends(get_session)]

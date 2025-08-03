@@ -2,18 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlmodel import Session
 from core.security import get_current_user
-from db.session import get_db
+from db.session import get_session
 from services.youtube import get_video_info, search_videos
 from models.video import VideoPublic
 
-router = APIRouter(prefix="/api/videos", tags=["videos"])
+router = APIRouter()
 
 
 @router.get("/{video_id}", response_model=VideoPublic)
 async def get_video(
     video_id: str,
     username: str = Depends(get_current_user),  # JWT protection
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_session)
 ):
     """Get streamable URL and metadata for a single video"""
     try:
@@ -35,7 +35,7 @@ async def search_youtube(
     query: str,
     max_results: int = 5,
     username: str = Depends(get_current_user),  # JWT protection
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_session)
 ):
     """Search YouTube videos"""
     try:

@@ -51,13 +51,26 @@ sqlite3 database.db
 ```
 
 ## First-Time Setup
+
+### Environment Variables (Development)
 ```bash
-echo "JWT_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(32))')" > .env
+JWT_SECRET_KEY=your-32-bit-secret-key
+DB_DRIVER=sqlite
+DB_NAME=database.db
+```
+### Environment Variables (Production)
+```bash
+DB_DRIVER=postgresql
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=myuser
+DB_PASSWORD=mypassword
+DB_NAME=mydatabase
 ```
 
 ## Running the Server
 ```bash
-# Start the Uvicorn server (development)
+# Start the Uvicorn server (development). Database tables are created on startup.
 uvicorn main:app --reload
 
 # Production-style (adjust workes as needeed)

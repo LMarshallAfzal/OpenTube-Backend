@@ -2,13 +2,14 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from routes import auth, video
 from db.session import engine
-from models.user import User
-from models.video import VideoPublic
-
+from core.config import settings
 
 app = FastAPI()
 app.include_router(auth.router, prefix="/api/auth")
-app.include_router(video.router)
+app.include_router(video.router, prefix="/api/videos", tags=["videos"])
 
-# Create DB TABLES (remove in production, use migrations)
-SQLModel.metadata.create_all(bind=engine)
+# Initialise database (development only)
+if settings.DB_DRIVER == "sqlite":
+    @app.on_event("startup")
+    def on_startup():
+        SQLModel.metadata.create_all(bind=engine)

@@ -1,19 +1,34 @@
-from pathlib import Path
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
-import os
-from dotenv import load_dotenv
-
-BASE_DIR = Path(__file__).parent.parent
-
-# Load environment variables from .env file
+from sqlalchemy.engine.url import URL
+from typing import Any
 
 
 class Settings(BaseSettings):
+    # Database settings
+    DB_DRIVER: str = "sqlite"
+    DB_HOST: str = ""
+    DB_PORT: int = 0
+    DB_USER: str = ""
+    DB_PASSWORD: str = ""
+    DB_NAME: str = "database.db"
+
+    @property
+    def DATABASE_URL(self) -> str:
+        if self.DB_DRIVER == "sqlite":
+            return f"sqlite:///{self.DB_NAME}"
+        return str(URL.create(
+            drivername="postgresql+psycopg2",
+            username=self.DB_USER,
+            password=self.DB_PASSWORD,
+            host=self.DB_HOST,
+            port=self.DB_PORT,
+            database=self.DB_NAME
+        ))
+
     SECRET_KEY: SecretStr
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    DATABASE_URL: str = f"sqlite:///{BASE_DIR}/database.db"
 
     class Config:
         env_file = ".env"
