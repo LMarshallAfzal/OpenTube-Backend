@@ -1,12 +1,16 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings
-
+import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent.parent
 
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / ".env")
+
 
 class Settings(BaseSettings):
-    SECRET_KEY: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+    SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     DATABASE_URL: str = f"sqlite:///{BASE_DIR}/database.db"
