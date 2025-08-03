@@ -5,3 +5,5 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     hashed_password: str
+
+    # history: List["History"] = Relationship(back_populates="user")
