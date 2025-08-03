@@ -2,9 +2,9 @@ from sqlmodel import SQLModel, Field
 from typing import Optional
 
 
-class VideoPublic(SQLModel):
+class VideoPublic(SQLModel, table=True):
     """Response model for video data"""
-    id: str
+    id: str = Field(primary_key=True)
     title: str
     stream_url: str
     thumbnail: str
