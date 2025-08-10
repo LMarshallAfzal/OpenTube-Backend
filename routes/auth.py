@@ -15,11 +15,6 @@ class UserCreate(BaseModel):
     password: str
 
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-
 @router.post("/signup")
 def signup(
     user_data: UserCreate,
@@ -35,7 +30,6 @@ def login(
     form: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_session),
 ):
-    # user_data: UserLogin, db: Session = Depends(get_session)):
     user = authenticate_user(db, form.username, form.password)
 
     if not user:
@@ -44,7 +38,6 @@ def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    # return {"token": create_access_token({"sub": user.username})}
     return {
         "access_token": create_access_token({"sub": user.username}),
         "token_type": "bearer"
