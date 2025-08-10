@@ -1,18 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
+from fastapi.security import OAuth2PasswordRequestForm
+
 from services.auth import authenticate_user, create_user
 from db.session import get_session
 from core.security import create_access_token
-from pydantic import BaseModel
-from fastapi.security import OAuth2PasswordRequestForm
+from schemas.user import UserCreate
+from schemas.token import Token
 
 router = APIRouter()
-
-
-# Add these Pydantic models
-class UserCreate(BaseModel):
-    username: str
-    password: str
 
 
 @router.post("/signup")
@@ -25,11 +21,11 @@ def signup(
     return {"access_token": token, "token_type": "bearer"}
 
 
-@router.post("/login")
+@router.post("/token")
 def login(
     form: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_session),
-):
+) -> Token:
     user = authenticate_user(db, form.username, form.password)
 
     if not user:
@@ -38,7 +34,7 @@ def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return {
-        "access_token": create_access_token({"sub": user.username}),
-        "token_type": "bearer"
-    }
+    return Token(
+        access_token=create_access_token({"sub": user.username}),
+        token_type="bearer"
+    )

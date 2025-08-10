@@ -1,7 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
 from sqlalchemy.engine.url import URL
-from typing import Any
 
 
 class Settings(BaseSettings):
