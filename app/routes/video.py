@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlmodel import Session
 
-from core.auth.dependencies import get_current_user
-from db.session import get_session
-from services.youtube import get_video_info, search_videos
-from models.video import VideoPublic
+from app.core.auth.dependencies import get_current_user
+from app.db.session import get_session
+from app.services.youtube import get_video_info, search_videos
+from app.models.video import VideoPublic
 
-router = APIRouter()
+video_router = APIRouter()
 
 
-@router.get("/{video_id}", response_model=VideoPublic)
+@video_router.get("/{video_id}", response_model=VideoPublic)
 async def get_video(
     video_id: str,
     username: str = Depends(get_current_user),  # JWT protection
@@ -31,7 +31,7 @@ async def get_video(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/search/", response_model=List[VideoPublic])
+@video_router.get("/search/", response_model=List[VideoPublic])
 async def search_youtube(
     query: str,
     max_results: int = 5,

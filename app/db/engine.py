@@ -5,7 +5,7 @@ from sqlalchemy.engine import Engine, URL
 from sqlalchemy import create_engine
 from typing import Dict
 
-from core.settings import settings
+from app.core.settings.base import settings
 
 
 def _sqlite_connect_args() -> Dict[str, object]:

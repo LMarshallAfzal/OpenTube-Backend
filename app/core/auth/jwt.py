@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 import jwt
 
-from ..settings import settings
+from app.core.settings.base import settings
 
 
 def create_access_token(data: dict) -> str:

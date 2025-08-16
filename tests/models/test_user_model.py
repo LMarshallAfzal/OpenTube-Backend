@@ -1,6 +1,6 @@
 import pytest
 from sqlmodel import Session, create_engine, select
-from app.models import User            # your model
+from app.models.user import User
 
 
 @pytest.fixture(scope="function")

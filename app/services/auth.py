@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session
 
-from core.utils.security import hash_password, verify_password
-from models.user import User
+from app.core.utils.security import hash_password, verify_password
+from app.models.user import User
 
 
 def create_user(db: Session, username: str, password: str):
