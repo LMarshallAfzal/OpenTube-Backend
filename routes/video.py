@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlmodel import Session
-from core.security import get_current_user
+
+from core.auth.dependencies import get_current_user
 from db.session import get_session
 from services.youtube import get_video_info, search_videos
 from models.video import VideoPublic

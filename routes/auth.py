@@ -4,28 +4,35 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from services.auth import authenticate_user, create_user
 from db.session import get_session
-from core.security import create_access_token
+from core.auth.jwt import create_access_token
 from schemas.user import UserCreate
-from schemas.token import Token
+from schemas.token import TokenResponse
 
-router = APIRouter()
+auth_router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 
-@router.post("/signup")
+@auth_router.post("/register", response_model=TokenResponse)
 def signup(
     user_data: UserCreate,
-    db: Session = Depends(get_session)
-):
+    db: Session = Depends(get_session),
+) -> TokenResponse:
+    """
+    Create a new user and return an access model
+    """
     user = create_user(db, user_data.username, user_data.password)
+
     token = create_access_token({"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    return TokenResponse(access_token=token, token_type="bearer")
 
 
-@router.post("/token")
+@auth_router.post("/token", response_model=TokenResponse)
 def login(
     form: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_session),
-) -> Token:
+) -> TokenResponse:
+    """
+    Authenticate an existing user and issue a JWT access token
+    """
     user = authenticate_user(db, form.username, form.password)
 
     if not user:
@@ -34,7 +41,8 @@ def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return Token(
+
+    return TokenResponse(
         access_token=create_access_token({"sub": user.username}),
         token_type="bearer"
     )
