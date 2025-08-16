@@ -1,4 +1,6 @@
 """Base settings for the server"""
+import os
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
 from sqlalchemy.engine.url import URL
