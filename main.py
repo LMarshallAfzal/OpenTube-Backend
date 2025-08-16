@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 
-from routes import auth, video
+from routes import auth_router, video
 from db.session import engine
-from core.config import settings
+from core.settings.base import settings
 from middleware.request_logger import log_request_body
 
-app = FastAPI()
+app = FastAPI(title="OpenTube")
 
 app.middleware("http")(log_request_body)
 
@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api/auth")
+app.include_router(auth_router)
 app.include_router(video.router, prefix="/api/videos", tags=["videos"])
 
 # Initialise database (development only)
