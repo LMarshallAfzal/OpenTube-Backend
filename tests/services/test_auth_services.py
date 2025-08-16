@@ -27,5 +27,43 @@ def test_create_user_success(session):
     assert user.username == "alice"
 
     db_user = session.exec(select(User).where(
-        User.username == "alice")).first()
+        User.username == "alice"))
     assert db_user is not None
+
+
+def test_create_user_duplicate_username(session):
+    """Creating a user with an existing username raises HTTPException."""
+    create_user(session, "bob", "pw1")  # first one succeeds
+
+    with pytest.raises(HTTPException) as exc:
+        create_user(session, "bob", "pw2")
+
+    assert exc.value.status_code == 400
+    assert exc.value.detail == "Username already registered"
+
+    # Verify that only the *first* user exists
+    users = session.exec(select(User).where(User.username == "bob")).all()
+    assert len(users) == 1
+
+
+def test_authenticate_success(session):
+    """Correct credentials return a User instance."""
+    create_user(session, "eve", "mypassword")
+
+    user = authenticate_user(session, "eve", "mypassword")
+    assert user is not None
+    assert user.username == "eve"
+
+
+def test_authenticate_wrong_password(session):
+    """Wrong password returns ``None``."""
+    create_user(session, "mallory", "goodpw")
+
+    result = authenticate_user(session, "mallory", "badpw")
+    assert result is None
+
+
+def test_authenticate_nonexistent_user(session):
+    """Unknown username returns ``None``."""
+    result = authenticate_user(session, "ghost", "doesntmatter")
+    assert result is None
