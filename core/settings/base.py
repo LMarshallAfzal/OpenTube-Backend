@@ -1,9 +1,10 @@
+"""Base settings for the server"""
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
 from sqlalchemy.engine.url import URL
 
 
-class Settings(BaseSettings):
+class BaseAppSettings(BaseSettings):
     # Database settings
     DB_DRIVER: str = "sqlite"
     DB_HOST: str = ""
@@ -25,9 +26,12 @@ class Settings(BaseSettings):
             database=self.DB_NAME
         ))
 
+    # Authentication settings
     SECRET_KEY: SecretStr
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    SQLALCHEMY_ECHO: bool = False
 
     class Config:
         env_file = ".env"
@@ -35,5 +39,5 @@ class Settings(BaseSettings):
         extra = "ignore"
 
 
-# Initialise after class definition
-settings = Settings()
+# Expose settings instance
+settings = BaseAppSettings()
