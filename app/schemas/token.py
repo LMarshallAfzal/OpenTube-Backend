@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class TokenPayload(BaseModel):
@@ -23,8 +23,13 @@ class TokenResponse(BaseModel):
     access_token: str = Field(..., alias="access_token")
     token_type: str
 
-    class Config:
-        validate_by_name = True
+    model_config = ConfigDict(
+        validate_by_name=True,
+        populate_by_alias=True,
+    )
+
+    # class Config:
+    #     validate_by_name = True
 
 
 class TokenData(BaseModel):
