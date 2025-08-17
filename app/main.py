@@ -36,11 +36,4 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth_router)
-app.include_router(video_router, prefix="/api/videos", tags=["videos"])
-
-
-# Initialise database (development only)
-# if settings.DB_DRIVER == "sqlite":
-#    @app.on_event("startup")
-#    def on_startup():
-#        SQLModel.metadata.create_all(bind=engine)
+app.include_router(video_router)

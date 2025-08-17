@@ -5,28 +5,40 @@ from sqlmodel import Session
 from app.core.auth.dependencies import get_current_user
 from app.db.session import get_session
 from app.services.youtube import get_video_info, search_videos
-from app.models.video import VideoPublic
+from app.schemas.video import VideoPublic, VideoFormat
 
-video_router = APIRouter()
+video_router = APIRouter(prefix="/api/video", tags=["Videos"])
 
 
 @video_router.get("/{video_id}", response_model=VideoPublic)
 async def get_video(
     video_id: str,
-    username: str = Depends(get_current_user),  # JWT protection
+    # username: str = Depends(get_current_user),  # JWT protection
     db: Session = Depends(get_session)
 ):
     """Get streamable URL and metadata for a single video"""
     try:
         video_data = get_video_info(video_id)
-        return {
-            "id": video_id,
-            "title": video_data["title"],
-            "stream_url": video_data["url"],
-            "thumbnail": video_data["thumbnail"],
-            "duration": video_data["duration"],
-            "requested_by": username  # Track who requested this
-        }
+        formats = [VideoFormat(**fmt) for fmt in video_data["formats"]]
+
+        return VideoPublic(
+            id=video_id,
+            title=video_data["title"],
+            stream_url=video_data["url"],
+            thumbnail=video_data["thumbnail"],
+            duration=video_data["duration"],
+            formats=formats
+        )
+
+        # return {
+        #   "id": video_id,
+        #  "title": video_data["title"],
+        #   "stream_url": video_data["url"],
+        #   "thumbnail": video_data["thumbnail"],
+        #   "duration": video_data["duration"],
+        #   "formats": video_data["formats"],
+        # "requested_by": username
+        # }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

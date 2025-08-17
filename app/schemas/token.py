@@ -28,9 +28,6 @@ class TokenResponse(BaseModel):
         populate_by_alias=True,
     )
 
-    # class Config:
-    #     validate_by_name = True
-
 
 class TokenData(BaseModel):
     username: Optional[str] = None

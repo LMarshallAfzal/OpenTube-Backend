@@ -17,6 +17,7 @@ def get_video_info(video_id: str) -> Dict:
             "url": info["url"],
             "thumbnail": info.get("thumbnail", ""),
             "duration": info.get("duration"),
+            "formats": info.get("formats", []),
         }
 
 
