@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, ConfigDict
 
 
 class UserCreate(BaseModel):
@@ -9,5 +9,4 @@ class UserCreate(BaseModel):
     username: constr(strip_whitespace=True)
     password: constr(min_length=8)
 
-    class Config:
-        str_strip_whitespace = True
+    model_config = ConfigDict(str_strip_whitespace=True)
