@@ -1,5 +1,6 @@
 import yt_dlp as youtube_dl
-from typing import List, Dict
+from typing import List, Dict, Tuple
+from fastapi import HTTPException
 
 
 def get_video_info(video_id: str) -> Dict:
@@ -15,29 +16,52 @@ def get_video_info(video_id: str) -> Dict:
         return {
             "title": info.get("title", "No title"),
             "url": info["url"],
-            "thumbnail": info.get("thumbnail", ""),
+            "thumbnail": info.get("thumbnails", ""),
             "duration": info.get("duration"),
             "formats": info.get("formats", []),
+            "channel_id": info.get("channel_id"),
+            "channel_name": info.get("channel_name"),
+            "view_count": info.get("view_count")
         }
 
 
-def search_videos(query: str, max_results: int = 10) -> List[Dict]:
+def search_videos(query: str, limit: int) -> Tuple[List[Dict], bool]:
     """Search YouTube and return basic video info"""
     ydl_options = {
         "quiet": True,
         "extract_flat": True,
         "default_search": "ytsearch",
-        "max_downloads": max_results,
+        "skip_download": True,
+        "noplaylist": True,
     }
+
     with youtube_dl.YoutubeDL(ydl_options) as ydl:
-        info = ydl.extract_info(f"ytsearch{max_results}:{
-                                query}", download=False)
+        try:
+            info = ydl.extract_info(f"ytsearch{limit + 1}:{
+                query}", download=False)
+        except youtube_dl.utils.DownloadError as exc:
+            raise HTTPException(status_code=502, detail=str(exc))
+
+        entries = info.get("entries", [])
+        has_more = len(entries) > limit
+        entries = entries[:limit]
+
         return [
             {
                 "id": entry["id"],
                 "title": entry["title"],
-                "thumbnails": [entry.get("thumbnail", "")],
+                "url": entry["url"],
+                "description": entry["description"],
+                "thumbnails": [entry.get("thumbnails", "")],
                 "duration": entry.get("duration"),
+                "channel_id": entry.get("channel_id"),
+                "channel_name": entry.get("channel"),
+                "view_count": entry.get("view_count")
             }
-            for entry in info["entries"]
-        ]
+            for entry in entries
+        ], has_more
+
+
+def first_thumbnail_url(thumbnails: List[Dict]) -> str | None:
+    """Return the URL of the first thumbnail or None if missing."""
+    return thumbnails[0]["url"] if thumbnails else None

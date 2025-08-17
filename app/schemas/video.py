@@ -22,8 +22,12 @@ class VideoPublic(BaseModel):
     """Response model for video data"""
     id: str
     title: str
-    stream_url: str
+    stream_url: Optional[str] = None
+    description: Optional[str] = None
     thumbnail: Optional[str] = None
     duration: Optional[int] = None
-    formats: List[VideoFormat]
+    formats: List[VideoFormat] | None = None
+    channel_id: Optional[str] = None
+    channel_name: Optional[str] = None
+    view_count: Optional[int] = None
     requested_by: Optional[str] = None
