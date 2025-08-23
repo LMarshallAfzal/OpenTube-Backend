@@ -24,9 +24,6 @@ def get_video_info(video_id: str) -> Dict:
             "view_count": info.get("view_count")
         }
 
-        # TODO: Filter video urls that don't begin with https://rr2---sn-cu-cgnl.googlevideo.com/videoplayback?
-        # TODO: work out a way to deal with seperate video and audio streams
-
 
 def search_videos(query: str, limit: int) -> Tuple[List[Dict], bool]:
     """Search YouTube and return basic video info"""
