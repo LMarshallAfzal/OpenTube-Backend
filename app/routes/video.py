@@ -20,18 +20,38 @@ async def get_video(
     """Get streamable URL and metadata for a single video"""
     try:
         video_data = get_video_info(video_id)
-        formats = [VideoFormat(**fmt) for fmt in video_data["formats"]]
+
+        format_data = video_data["formats"]
+        formats = []
+        for fmt in format_data:
+            if fmt.get("url").startswith("https://rr1---sn-"):
+
+                format = VideoFormat(
+                    format_id=fmt.get("format_id"),
+                    format_note=fmt.get("format_note"),
+                    ext=fmt.get("ext"),
+                    vcodec=fmt.get("vcodec"),
+                    acodec=fmt.get("acodec"),
+                    url=fmt.get("url"),
+                    width=fmt.get("width"),
+                    height=fmt.get("height"),
+                    fps=fmt.get("fps"),
+                    aspect_ratio=fmt.get("aspect_ratio"),
+                    resolution=fmt.get("resolution"),
+                    filesize_in_bytes=fmt.get("filesize_approx"),
+                )
+
+                formats.append(format)
 
         return VideoPublic(
             id=video_id,
             title=video_data["title"],
-            stream_url=video_data["url"],
             thumbnail=first_thumbnail_url(video_data["thumbnail"]),
-            duration=video_data["duration"],
-            formats=formats,
+            duration_in_seconds=video_data["duration"],
             channel_id=video_data["channel_id"],
             channel_name=video_data["channel_name"],
-            view_count=video_data["view_count"]
+            view_count=video_data["view_count"],
+            formats=formats
         )
 
     except Exception as e:

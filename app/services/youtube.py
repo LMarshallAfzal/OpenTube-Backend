@@ -8,14 +8,14 @@ def get_video_info(video_id: str) -> Dict:
     ydl_options = {
         "quiet": True,
         "no_warnings": True,
-        "format": "best",
+        "format": "bestvideo+bestaudio/best",
         "extract_flat": False,
     }
     with youtube_dl.YoutubeDL(ydl_options) as ydl:
         info = ydl.extract_info(f"https://youtu.be/{video_id}", download=False)
         return {
             "title": info.get("title", "No title"),
-            "url": info["url"],
+            "url": info.get("url"),
             "thumbnail": info.get("thumbnails", ""),
             "duration": info.get("duration"),
             "formats": info.get("formats", []),
@@ -23,6 +23,9 @@ def get_video_info(video_id: str) -> Dict:
             "channel_name": info.get("channel_name"),
             "view_count": info.get("view_count")
         }
+
+        # TODO: Filter video urls that don't begin with https://rr2---sn-cu-cgnl.googlevideo.com/videoplayback?
+        # TODO: work out a way to deal with seperate video and audio streams
 
 
 def search_videos(query: str, limit: int) -> Tuple[List[Dict], bool]:

@@ -4,14 +4,18 @@ from typing import Optional, List
 
 class VideoFormat(BaseModel):
     format_id: str
+    format_note: str
     ext: str
-    resolution: Optional[str] = None
-
-    filesize: Optional[int] = None
-    vcodec: Optional[str] = None
-    acodec: Optional[str] = None
-
+    vcodec: str
+    acodec: str
     url: str
+    width: Optional[int] = None
+    height: Optional[int] = None
+    fps: Optional[float] = None
+    aspect_ratio: Optional[float] = None
+
+    resolution: Optional[str] = None
+    filesize_in_bytes: Optional[int] = None
 
     model_config = ConfigDict(
         extra="ignore"
@@ -22,12 +26,10 @@ class VideoPublic(BaseModel):
     """Response model for video data"""
     id: str
     title: str
-    stream_url: Optional[str] = None
-    description: Optional[str] = None
     thumbnail: Optional[str] = None
-    duration: Optional[int] = None
-    formats: List[VideoFormat] | None = None
+    duration_in_seconds: Optional[int] = None
     channel_id: Optional[str] = None
     channel_name: Optional[str] = None
     view_count: Optional[int] = None
     requested_by: Optional[str] = None
+    formats: List[VideoFormat] | None = None

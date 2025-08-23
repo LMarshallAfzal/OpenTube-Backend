@@ -4,7 +4,7 @@ sqlmodel==0.0.24
 passlib==1.7.4
 python-jose[cryptography]==3.5.0
 python-multipart==0.0.20
-yt-dlp==2025.7.21
+yt-dlp==2025.8.20
 pydantic-settings==2.10.1
 bcrypt==4.3.0
 python-dotenv==1.1.1
