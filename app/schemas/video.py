@@ -4,10 +4,10 @@ from typing import Optional, List
 
 class VideoFormat(BaseModel):
     format_id: str
-    format_note: str
+    format_note: Optional[str] = None
     ext: str
-    vcodec: str
-    acodec: str
+    vcodec: Optional[str] = None
+    acodec: Optional[str] = None
     url: str
     width: Optional[int] = None
     height: Optional[int] = None

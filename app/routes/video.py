@@ -24,7 +24,7 @@ async def get_video(
         format_data = video_data["formats"]
         formats = []
         for fmt in format_data:
-            if fmt.get("url").startswith("https://rr1---sn-"):
+            if fmt.get("url").startswith("https://rr"):
 
                 format = VideoFormat(
                     format_id=fmt.get("format_id"),

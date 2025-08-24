@@ -64,4 +64,4 @@ def search_videos(query: str, limit: int) -> Tuple[List[Dict], bool]:
 
 def first_thumbnail_url(thumbnails: List[Dict]) -> str | None:
     """Return the URL of the first thumbnail or None if missing."""
-    return thumbnails[0]["url"] if thumbnails else None
+    return thumbnails[-1]["url"] if thumbnails else None
